@@ -6,8 +6,6 @@ import argparse
 from pathlib import Path
 import re
 
-# input: https://twitter.com/ImReeeK/status/1247980101435822088?s=09
-
 class vidDownload():
 	def __init__(self, vid_url, session = None):
 		video_id = vid_url.split('/')[5].split('?')[0]
@@ -43,7 +41,7 @@ class vidDownload():
 			get_json =  json.loads(get_url.text)
 			media = get_json['extended_entities']['media'][0]
 			videos = media['video_info']['variants']
-            bitrate = 0
+            		bitrate = 0
 			for vid in videos:
 				if vid['content_type'] == 'video/mp4':
 					if vid['bitrate'] > bitrate:
@@ -51,6 +49,3 @@ class vidDownload():
 						hq_video_url = vid['url'] 
 			return hq_video_url
 		self.url = downloader(self)
-
-			
-print(vidDownload("https://twitter.com/ImReeeK/status/1247980101435822088?s=09").url)
