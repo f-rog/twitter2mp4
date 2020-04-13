@@ -3,10 +3,10 @@ twitter2mp4 its a tool to download videos from Twitter. Needless of ffmpeg.
 
 Here's what twitter2mp4 looks in action.
 ```
-$ python twitter2mp4.py https://twitter.com/ImReeeK/status/1247980101435822088\?s=09 -fn funny_video
+$ python twitter2mp4.py https://twitter.com/ImReeeK/status/1247980101435822088?s=09 -fn funny_video
 [+] File successfully saved as funny_video.mp4 !
 
-$ python twitter2mp4.py https://twitter.com/ImReeeK/status/1247980101435822088\?s=09 -l
+$ python twitter2mp4.py https://twitter.com/ImReeeK/status/1247980101435822088?s=09 -l
 [+] Link: https://video.twimg.com/ext_tw_video/1247979567739879424/pu/vid/720x986/MgihvBG9E_2E-Y4I.mp4?tag=10
 
 ```
@@ -33,7 +33,6 @@ $ python twitter2mp4.py
 
 ## Usage
 ```
-
 $ python twitter2mp4.py -h
 usage:  [-h] [-d DIR] [-fn FILENAME] [-l] url
 
@@ -50,6 +49,10 @@ optional arguments:
                         Custom filename for the downloaded video.
   -l, --link            Will output a direct URL to the video.
 
+```
+Example:
+```
+$ python twitter2mp4.py https://twitter.com/ImReeeK/status/1247980101435822088?s=09 -fn funny_video
 ```
 
 ## Compatibility
