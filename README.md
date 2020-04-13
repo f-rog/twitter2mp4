@@ -25,7 +25,7 @@ $ cd twitter2mp4
 $ pip install -r requirements.txt
 ```
 
-3) Run PrxGetter (see [Usage](#usage) below for more detail)
+3) Run twitter2mp4 (see [Usage](#usage) below for more detail)
 
 ```
 $ python twitter2mp4.py
