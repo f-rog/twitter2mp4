@@ -79,6 +79,7 @@ def save_file(url,ddir,filename):
 	with requests.get(url, stream=True) as r:
 		with open(op_dir, 'wb') as f:
 			shutil.copyfileobj(r.raw, f)
+	print('['+Fore.GREEN+'+'+Style.RESET_ALL+'] '+'File successfully saved as '+fn+' !')
 
 if sys.version_info[0] <= 2:
 	print('['+Fore.RED+'+'+Style.RESET_ALL+'] '+'This script is meant to be used with Python 3 only.')
@@ -100,7 +101,6 @@ try:
 				print('['+Fore.GREEN+'+'+Style.RESET_ALL+'] '+'Link: '+dl.url)
 			else:
 				save_file(dl.url,args.dir,args.filename)
-				print('['+Fore.GREEN+'+'+Style.RESET_ALL+'] '+'File successfully saved!')
 		else:
 			print('['+Fore.YELLOW+'+'+Style.RESET_ALL+'] '+'Theres an internal error, hang on...')
 			pretty_log(dl.log)
