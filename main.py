@@ -7,11 +7,14 @@ import os.path
 import re
 import shutil
 from datetime import datetime
-# import logging
+import logging
+from colorama import init,Fore,Style
+
+init() # colorama init
 
 class vidDownload():
 	def __init__(self, vid_url, session = None):
-		video_id = vid_url.split('/')[5].split('?')[0]
+		video_id = vid_url.split('/')[5].split('?')[0] if 's?=' in vid_url else vid_url.split('/')[5]
 		self.log = {}
 		if not session:
 			self.session = requests.Session()
@@ -59,17 +62,16 @@ class vidDownload():
 
 		self.url = downloader(self)
 
-def pretty_log(logdict=False,exception=False):
-	log_dir = os.path.join('./log/', 'log_file_twvdl-'+str(datetime.now()).replace(':','-')[:19]+'.txt')
+def pretty_log(logdict):
+	fn = 'log_file_twvdl-'+str(datetime.now()).replace(':','-')[:19]+'.txt'
+	log_dir = os.path.join('./log/', fn)
 	with open(log_dir,'w') as logfile:
-		if (logdict):
-			logfile.write('These are the logs for the sequence of requests, if theres an issue, submit a report and this file, please\n')
-			for k,v in logdict.items():
-				logfile.write('-*-*-*-*- start of '+k+'-*-*-*-*-\n'+str(v)+'\n-*-*-*-*- end of '+k+'-*-*-*-*-\n')
-		if (exception):
-			logfile.write("If you're seeing this it's because there was an exception, and this is important, exception info is below:\n"+exception)
+		logfile.write('These are the logs for the sequence of requests, if theres an issue, please submit a report with the contents of this file.\n')
+		for k,v in logdict.items():
+			logfile.write('-*-*-*-*- start of '+k+'-*-*-*-*-\n'+str(v)+'\n-*-*-*-*- end of '+k+'-*-*-*-*-\n')
+		print('['+Fore.RED+'+'+Style.RESET_ALL+'] '+'Log saved at /log/'+fn+'\nPlease submit a report with the content of said file.')
 
-def save_file(url,ddir='./videos/',filename=False):
+def save_file(url,ddir,filename):
 	fn = url.split('/')[8].split('?')[0]
 	if (filename):
 		fn = filname if '.mp4' in filename else filename+'.mp4'
@@ -78,11 +80,33 @@ def save_file(url,ddir='./videos/',filename=False):
 		with open(op_dir, 'wb') as f:
 			shutil.copyfileobj(r.raw, f)
 
+if sys.version_info[0] <= 2:
+	print('['+Fore.RED+'+'+Style.RESET_ALL+'] '+'This script is meant to be used with Python 3 only.')
+	sys.exit(1)
 
-   
-dl = vidDownload("https://twitter.com/ImReeeK/status/1247980101435822088?s=09")
-if (dl):
-	print(dl.url)
-	save_file(dl.url)
-	pretty_log(dl.log)
-	
+parser = argparse.ArgumentParser()
+parser.add_argument('url', type=str, help = 'The URL to the video you wanna download (ex. https://twitter.com/bruhmoment/status/1247980101435822088?s=09).')
+parser.add_argument('-d', '--dir',type=str, default = './videos/',dest = 'dir',help = 'The directory you wanna save the downloaded video/s to.')
+parser.add_argument('-fn', '--filename',type=str, default = False,dest = 'filename',help = 'Custom filename for the downloaded video.')
+parser.add_argument('-l', '--link',dest = 'link',default = 0, action = 'count', help = 'Will output a direct URL to the video.')
+
+args = parser.parse_args()
+
+try:
+	if re.match(r'https:\/\/twitter.com\/\w{1,15}\/status\/(\d{15,25})',args.url):
+		dl = vidDownload(args.url)
+		if (dl.url):
+			if args.link >= 1:
+				print('['+Fore.GREEN+'+'+Style.RESET_ALL+'] '+'Link: '+dl.url)
+			else:
+				save_file(dl.url,args.dir,args.filename)
+				print('['+Fore.GREEN+'+'+Style.RESET_ALL+'] '+'File successfully saved!')
+		else:
+			print('['+Fore.YELLOW+'+'+Style.RESET_ALL+'] '+'Theres an internal error, hang on...')
+			pretty_log(dl.log)
+	else:
+		sys.exit('['+Fore.RED+'+'+Style.RESET_ALL+'] '+"Invalid URL format, example: https://twitter.com/bruhmoment/status/1247980101435822088 (with or without the 's?=xx')\n"+'['+Fore.RED+'+'+Style.RESET_ALL+'] '+'For more details, use -h.')
+
+except Exception as e:
+	print('['+Fore.RED+'+'+Style.RESET_ALL+'] '+'There was an error, please submit a report with the details below.')
+	logging.error('Error at %s', 'division', exc_info=e)
